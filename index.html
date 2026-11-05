@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SWARAJYA ATLAS | Presented by IGMIRAL — Forts of Chhatrapati Shivaji Maharaj</title>
+  <meta name="description" content="A royal interactive historical atlas celebrating the fortress architecture, naval mastery, and strategic genius of Chhatrapati Shivaji Maharaj." />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@600;700;900&family=Cinzel:wght@400;600;700;800&family=Rozha+One&family=Yatra+One&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Leaflet.js Map CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            maroon: {
+              950: '#230408',
+              900: '#3d0810',
+              800: '#5c0d19',
+              700: '#7e1223',
+              600: '#9b1b2f',
+            },
+            gold: {
+              100: '#fcf6db',
+              200: '#faedb7',
+              300: '#f5df8b',
+              400: '#eecb5c',
+              500: '#d4af37', // Antique Gold primary
+              600: '#b89027',
+              700: '#916e1c',
+            },
+            saffron: {
+              500: '#ff6600',
+              600: '#e55a00',
+              700: '#c24b00',
+            },
+            obsidian: {
+              950: '#070505',
+              900: '#0f0a09',
+              850: '#150f0e',
+              800: '#1d1514',
+            }
+          },
+          fontFamily: {
+            cinzel: ['"Cinzel"', 'serif'],
+            cinzelDeco: ['"Cinzel Decorative"', 'serif'],
+            marathi: ['"Rozha One"', '"Yatra One"', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          backgroundImage: {
+            'royal-gradient': 'radial-gradient(ellipse at top, #3d0810 0%, #0f0a09 70%, #070505 100%)',
+            'gold-shimmer': 'linear-gradient(135deg, #f5df8b 0%, #d4af37 50%, #916e1c 100%)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f0a09;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #5c0d19;
+      border-radius: 4px;
+      border: 1px solid #d4af37;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #d4af37;
+    }
+
+    /* Antique Ornamental Border */
+    .maratha-border {
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      box-shadow: inset 0 0 15px rgba(212, 175, 55, 0.08), 0 8px 32px rgba(0, 0, 0, 0.6);
+      position: relative;
+    }
+    .maratha-border::before {
+      content: '';
+      position: absolute;
+      top: 2px; left: 2px; right: 2px; bottom: 2px;
+      border: 1px solid rgba(212, 175, 55, 0.15);
+      pointer-events: none;
+    }
+
+    .gold-glow-text {
+      text-shadow: 0 0 20px rgba(212, 175, 55, 0.4), 0 0 40px rgba(212, 175, 55, 0.2);
+    }
+    .saffron-glow {
+      box-shadow: 0 0 25px rgba(255, 102, 0, 0.35);
+    }
+
+    /* Leaflet Dark Customization */
+    .leaflet-container {
+      background: #0c0908 !important;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .leaflet-tile {
+      filter: brightness(0.65) invert(1) contrast(3.2) hue-rotate(185deg) saturate(0.35) brightness(0.7) !important;
+    }
+    .leaflet-popup-content-wrapper {
+      background: #1a0f0e !important;
+      color: #fcf6db !important;
+      border: 1px solid #d4af37 !important;
+      border-radius: 6px !important;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8) !important;
+    }
+    .leaflet-popup-tip {
+      background: #1a0f0e !important;
+      border: 1px solid #d4af37 !important;
+    }
+
+    /* Pulse animation */
+    @keyframes pulseGold {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.15); opacity: 0.8; }
+    }
+    .gold-marker-pulse {
+      animation: pulseGold 2.2s infinite ease-in-out;
+    }
+  </style>
+</head>
+
+<body class="bg-obsidian-950 text-stone-200 antialiased selection:bg-gold-500 selection:text-maroon-950">
+
+  <!-- ================= TOP TICKER / MUDRA BANNER ================= -->
+  <div class="bg-maroon-950 border-b border-gold-500/25 py-2 px-4 text-xs font-serif text-center text-gold-300 tracking-wider flex items-center justify-between">
+    <div class="hidden md:flex items-center space-x-2">
+      <i class="fa-solid fa-crown text-gold-500 text-xs"></i>
+      <span>|| जय भवानी जय शिवाजी ||</span>
+    </div>
+    <div class="mx-auto text-[11px] sm:text-xs tracking-widest uppercase font-cinzel text-gold-200/90 flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-saffron-500 animate-ping"></span>
+      <span data-i18n="topQuote">प्रतिपच्चंद्रलेखेव वर्धिष्णुर्विश्ववंदिता शाहसूनोः शिवस्यैषा मुद्रा भद्राय राजते |</span>
+    </div>
+    <div class="flex items-center space-x-4">
+      <!-- Ambient Audio Synthesizer Toggle -->
+      <button id="ambientAudioBtn" onclick="toggleRoyalAudio()" class="text-gold-400 hover:text-gold-200 transition text-[11px] uppercase tracking-wider flex items-center gap-1 border border-gold-500/30 px-2 py-0.5 rounded">
+        <i id="audioIcon" class="fa-solid fa-volume-xmark"></i>
+        <span id="audioStatusText">BGM: Off</span>
+      </button>
+
+      <!-- Language Toggle -->
+      <button onclick="toggleLanguage()" class="bg-gold-500/20 hover:bg-gold-500/30 border border-gold-500/50 text-gold-300 px-2.5 py-0.5 rounded text-[11px] font-bold tracking-wider transition">
+        <span id="langDisplay">मराठी</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= ROYAL NAVIGATION BAR ================= -->
+  <nav class="sticky top-0 z-50 bg-obsidian-900/95 backdrop-blur-md border-b border-gold-500/30 shadow-2xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <!-- Logo / Brand -->
+        <a href="#hero" class="flex items-center gap-3 group">
+          <div class="w-12 h-12 rounded-full border-2 border-gold-500 bg-maroon-900 flex items-center justify-center shadow-lg shadow-gold-500/10 group-hover:rotate-12 transition duration-500">
+            <i class="fa-solid fa-shield-halved text-gold-400 text-xl"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-cinzelDeco text-lg sm:text-2xl font-bold tracking-wider text-gold-400 group-hover:text-gold-200 transition">SWARAJYA ATLAS</span>
+            </div>
+            <span class="text-[9px] font-cinzel tracking-[0.25em] text-stone-400 block -mt-1 uppercase">Presented by <strong class="text-gold-300">IGMIRAL</strong></span>
+          </div>
+        </a>
+
+        <!-- Desktop Menu -->
+        <div class="hidden xl:flex items-center space-x-7 font-cinzel text-xs font-semibold tracking-wider text-stone-300">
+          <a href="#hero" class="hover:text-gold-400 transition" data-i18n="navHome">HOME</a>
+          <a href="#map-section" class="hover:text-gold-400 transition" data-i18n="navMap">INTERACTIVE MAP</a>
+          <a href="#encyclopedia" class="hover:text-gold-400 transition" data-i18n="navForts">FORT ENCYCLOPEDIA</a>
+          <a href="#timeline" class="hover:text-gold-400 transition" data-i18n="navTimeline">TIMELINE</a>
+          <a href="#battles" class="hover:text-gold-400 transition" data-i18n="navBattles">BATTLES & TACTICS</a>
+          <a href="#architecture" class="hover:text-gold-400 transition" data-i18n="navArch">ARCHITECTURE</a>
+          <a href="#gallery" class="hover:text-gold-400 transition" data-i18n="navGallery">GALLERY</a>
+          <a href="#about" class="hover:text-gold-400 transition" data-i18n="navAbout">ABOUT</a>
+          <a href="#contact" class="hover:text-gold-400 transition" data-i18n="navContact">EXPEDITION DESK</a>
+        </div>
+
+        <!-- CTA & Mobile Toggle -->
+        <div class="flex items-center gap-3">
+          <a href="#map-section" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-gold-600 to-gold-500 hover:from-gold-500 hover:to-gold-400 text-maroon-950 font-cinzel font-bold text-xs rounded tracking-widest shadow-md hover:shadow-gold-500/30 transition transform hover:-translate-y-0.5">
+            <i class="fa-solid fa-compass"></i>
+            <span data-i18n="ctaExplore">EXPLORE FORTS</span>
+          </a>
+          <button id="mobileMenuBtn" onclick="toggleMobileNav()" class="xl:hidden text-gold-400 text-2xl p-2 focus:outline-none">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobileMenu" class="hidden xl:hidden bg-obsidian-900 border-b border-gold-500/30 px-6 py-6 space-y-4 font-cinzel text-sm">
+      <a href="#hero" onclick="toggleMobileNav()" class="block text-gold-400 hover:text-stone-200">HOME</a>
+      <a href="#map-section" onclick="toggleMobileNav()" class="block text-gold-400 hover:text-stone-200">INTERACTIVE MAP</a>
+      <a href="#encyclopedia" onclick="toggleMobileNav()" class="block text-gold-400 hover:text-stone-200">FORT ENCYCLOPEDIA</a>
+      <a href="#timeline" onclick="toggleMobileNav()" class="block text-gold-400 hover:text-stone-200">TIMELINE</a>
+      <a href="#battles" onclick="toggleMobileNav()" class="block text-gold-400 hover:text-stone-200">BATTLES & TACTICS</a>
+      <a href="#architecture" onclick="toggleMobileNav()" class="block text-gold-400 hover:text-stone-200">ARCHITECTURE</a>
+      <a href="#gallery" onclick="toggleMobileNav()" class="block text-gold-400 hover:text-stone-200">GALLERY</a>
+      <a href="#about" onclick="toggleMobileNav()" class="block text-gold-400 hover:text-stone-200">ABOUT</a>
+      <a href="#contact" onclick="toggleMobileNav()" class="block text-gold-400 hover:text-stone-200">EXPEDITION DESK</a>
+    </div>
+  </nav>
+
+  <!-- ================= HERO SECTION ================= -->
+  <header id="hero" class="relative min-h-[92vh] flex items-center justify-center bg-royal-gradient overflow-hidden border-b border-gold-500/20">
+    <!-- Atmospheric Background Vignettes -->
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.08)_0,transparent_70%)] pointer-events-none"></div>
+    <div class="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1590483250269-0744f475ee46?auto=format&fit=crop&w=1920&q=80')] bg-cover bg-center mix-blend-overlay"></div>
+
+    <div class="relative max-w-5xl mx-auto px-6 py-20 text-center z-10">
+      <!-- Royal Insignia Graphic -->
+      <div class="inline-flex items-center justify-center p-3 mb-6 rounded-full border border-gold-500/40 bg-maroon-900/60 backdrop-blur-md shadow-2xl">
+        <span class="text-xs uppercase font-cinzel tracking-[0.3em] text-gold-300 px-3">
+          <i class="fa-solid fa-gem text-gold-400 mr-2"></i> The Sovereign Bastions of Maharashtra
+        </span>
+      </div>
+
+      <!-- Main Headline -->
+      <h1 class="font-cinzelDeco text-4xl sm:text-6xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-gold-100 via-gold-400 to-amber-600 mb-4 gold-glow-text leading-tight">
+        SWARAJYA ATLAS
+      </h1>
+
+      <p class="font-cinzel text-sm sm:text-base md:text-xl text-stone-300 tracking-wider max-w-3xl mx-auto mb-6 leading-relaxed">
+        An epic cartographic tribute to <strong class="text-gold-300 font-bold">Chhatrapati Shivaji Maharaj</strong> — The Architect of Freedom, Master of Ganimi Kava, and Father of the Indian Navy.
+      </p>
+
+      <!-- Royal Rajmudra Octagon Crest Display -->
+      <div class="my-8 inline-block maratha-border bg-maroon-950/80 backdrop-blur-md p-6 max-w-xl mx-auto rounded-lg">
+        <p class="font-marathi text-gold-300 text-lg sm:text-xl leading-relaxed tracking-wide">
+          "प्रतिपच्चंद्रलेखेव वर्धिष्णुर्विश्ववंदिता शाहसूनोः शिवस्यैषा मुद्रा भद्राय राजते"
+        </p>
+        <p class="font-cinzel text-[11px] text-stone-400 mt-2 uppercase tracking-widest border-t border-gold-500/20 pt-2">
+          "Ever-increasing like the crescent moon, adored by the cosmos, this seal of Shivaji, son of Shahaji, reigns for universal welfare."
+        </p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-wrap items-center justify-center gap-4 mt-6">
+        <a href="#map-section" class="px-8 py-3.5 bg-gradient-to-r from-gold-500 to-amber-600 hover:from-gold-400 hover:to-amber-500 text-obsidian-950 font-cinzel font-bold text-xs sm:text-sm rounded tracking-widest transition duration-300 transform hover:-translate-y-1 shadow-lg shadow-gold-500/20 flex items-center gap-2">
+          <i class="fa-solid fa-map-location-dot"></i>
+          <span>EXPLORE INTERACTIVE MAP</span>
+        </a>
+        <a href="#encyclopedia" class="px-8 py-3.5 bg-maroon-900/80 hover:bg-maroon-800 text-gold-200 border border-gold-500/50 font-cinzel font-semibold text-xs sm:text-sm rounded tracking-widest transition duration-300 backdrop-blur-sm flex items-center gap-2">
+          <i class="fa-solid fa-book-bookmark"></i>
+          <span>FORT ARCHIVES (350+)</span>
+        </a>
+      </div>
+
+      <!-- Key Quick Stats Bar -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-16 max-w-4xl mx-auto pt-8 border-t border-gold-500/20">
+        <div class="p-3 bg-obsidian-900/60 rounded border border-gold-500/10">
+          <div class="font-cinzel text-2xl sm:text-3xl font-extrabold text-gold-400">350+</div>
+          <div class="text-[11px] font-cinzel text-stone-400 uppercase tracking-wider">Fortresses Held</div>
+        </div>
+        <div class="p-3 bg-obsidian-900/60 rounded border border-gold-500/10">
+          <div class="font-cinzel text-2xl sm:text-3xl font-extrabold text-gold-400">111</div>
+          <div class="text-[11px] font-cinzel text-stone-400 uppercase tracking-wider">Built from Scratch</div>
+        </div>
+        <div class="p-3 bg-obsidian-900/60 rounded border border-gold-500/10">
+          <div class="font-cinzel text-2xl sm:text-3xl font-extrabold text-gold-400">720 km</div>
+          <div class="text-[11px] font-cinzel text-stone-400 uppercase tracking-wider">Coastal Bastion Wall</div>
+        </div>
+        <div class="p-3 bg-obsidian-900/60 rounded border border-gold-500/10">
+          <div class="font-cinzel text-2xl sm:text-3xl font-extrabold text-gold-400">100%</div>
+          <div class="text-[11px] font-cinzel text-stone-400 uppercase tracking-wider">Ganimi Kava Mastery</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= SECTION: INTERACTIVE MAHARASHTRA FORT MAP ================= -->
+  <section id="map-section" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <div class="text-center max-w-3xl mx-auto mb-10">
+      <span class="text-xs font-cinzel uppercase tracking-[0.3em] text-saffron-500 font-bold block mb-2">Tactical Geography</span>
+      <h2 class="font-cinzelDeco text-3xl sm:text-4xl text-gold-300 font-bold mb-3">Interactive Sahyadri Fortress Map</h2>
+      <p class="text-stone-400 text-sm font-sans">
+        Explore real-world GPS coordinates of Chhatrapati Shivaji Maharaj's coastal and hill forts across Maharashtra. Click markers to reveal strategic roles, altitudes, and battle history.
+      </p>
+    </div>
+
+    <!-- Map Filter Toolbar -->
+    <div class="flex flex-wrap items-center justify-between gap-4 mb-4 bg-obsidian-900/80 p-4 rounded-lg maratha-border">
+      <div class="flex items-center gap-2">
+        <span class="text-xs font-cinzel text-gold-300 mr-2"><i class="fa-solid fa-filter mr-1"></i> Filter Terrain:</span>
+        <button onclick="filterMapMarkers('all')" class="map-filter-btn active text-xs px-3 py-1.5 rounded bg-gold-500 text-obsidian-950 font-bold tracking-wider">ALL</button>
+        <button onclick="filterMapMarkers('hill')" class="map-filter-btn text-xs px-3 py-1.5 rounded bg-maroon-900/70 border border-gold-500/30 text-stone-300 hover:text-gold-300">GIRIDURGA (Hill)</button>
+        <button onclick="filterMapMarkers('sea')" class="map-filter-btn text-xs px-3 py-1.5 rounded bg-maroon-900/70 border border-gold-500/30 text-stone-300 hover:text-gold-300">JALDURGA (Sea)</button>
+      </div>
+      <div class="text-xs font-sans text-stone-400">
+        Showing <span id="mapCounter" class="text-gold-400 font-bold">10</span> Crown Fortresses
+      </div>
+    </div>
+
+    <!-- The Map Viewport -->
+    <div class="relative rounded-xl overflow-hidden maratha-border shadow-2xl h-[560px]">
+      <div id="maharashtraMap" class="w-full h-full z-10"></div>
+      
+      <!-- Overlay Compass Rose -->
+      <div class="absolute bottom-5 right-5 z-20 pointer-events-none opacity-40 hidden sm:block">
+        <i class="fa-regular fa-compass text-6xl text-gold-500"></i>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SECTION: FORT ENCYCLOPEDIA ================= -->
+  <section id="encyclopedia" class="py-20 bg-obsidian-900 border-t border-b border-gold-500/20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Header -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+        <div>
+          <span class="text-xs font-cinzel uppercase tracking-[0.3em] text-saffron-500 font-bold block mb-2">Comprehensive Compendium</span>
+          <h2 class="font-cinzelDeco text-3xl sm:text-4xl text-gold-300 font-bold">Fort Encyclopedia</h2>
+          <p class="text-stone-400 text-sm mt-2 max-w-xl font-sans">
+            Deep technical monographs of prime fortifications, their defensive anatomy, water engineering, and conquest narratives.
+          </p>
+        </div>
+
+        <!-- Search and Filter Bar -->
+        <div class="flex flex-col sm:flex-row gap-3">
+          <div class="relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-gold-500/60 text-xs"></i>
+            <input 
+              type="text" 
+              id="fortSearchInput" 
+              onkeyup="searchForts()" 
+              placeholder="Search by name, district, feature..." 
+              class="bg-obsidian-950 border border-gold-500/40 rounded-lg pl-9 pr-4 py-2.5 text-xs text-stone-200 placeholder-stone-500 focus:outline-none focus:border-gold-400 w-full sm:w-64"
+            />
+          </div>
+          <select id="typeFilter" onchange="searchForts()" class="bg-obsidian-950 border border-gold-500/40 rounded-lg px-3 py-2.5 text-xs text-gold-300 focus:outline-none">
+            <option value="all">All Fortress Types</option>
+            <option value="giridurga">Giridurga (Hill Fort)</option>
+            <option value="jaldurga">Jaldurga (Sea Fort)</option>
+            <option value="capital">Royal Capitals</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Fort Grid -->
+      <div id="fortsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Rendered dynamically by JavaScript -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SECTION: HISTORICAL TIMELINE ================= -->
+  <section id="timeline" class="py-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <span class="text-xs font-cinzel uppercase tracking-[0.3em] text-saffron-500 font-bold block mb-2">Chronicle of Sovereignty</span>
+      <h2 class="font-cinzelDeco text-3xl sm:text-4xl text-gold-300 font-bold mb-3">Milestones of Swarajya (1630 – 1680)</h2>
+      <p class="text-stone-400 text-sm font-sans">
+        From the sacred vow at Rohideshwar to the golden coronation at Raigad and naval expansion.
+      </p>
+    </div>
+
+    <!-- Timeline Container -->
+    <div class="relative border-l-2 border-gold-500/40 ml-4 md:ml-32 space-y-12">
+      
+      <!-- Event 1 -->
+      <div class="relative pl-8 md:pl-12 group">
+        <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-saffron-500 border-2 border-gold-300 group-hover:scale-125 transition"></div>
+        <span class="hidden md:block absolute -left-28 top-0 font-cinzel font-bold text-sm text-gold-400">19 FEB 1630</span>
+        <div class="maratha-border bg-obsidian-900/90 p-6 rounded-lg">
+          <span class="md:hidden inline-block text-xs font-cinzel font-bold text-gold-400 mb-1">19 FEB 1630</span>
+          <h3 class="font-cinzel text-lg font-bold text-gold-200">Birth at Fort Shivneri</h3>
+          <p class="text-xs sm:text-sm text-stone-300 font-sans mt-2">
+            Shivaji Maharaj was born to Jijau Mata and Shahaji Raje Bhosale in the triangular hill fortress of Shivneri, named after the goddess Shivai.
+          </p>
+          <div class="mt-3 flex gap-2 text-[10px] text-stone-400 font-cinzel">
+            <span class="px-2 py-0.5 bg-maroon-900/70 border border-gold-500/20 rounded">Junnar, Pune</span>
+            <span class="px-2 py-0.5 bg-maroon-900/70 border border-gold-500/20 rounded">Fort Shivneri</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Event 2 -->
+      <div class="relative pl-8 md:pl-12 group">
+        <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-gold-500 border-2 border-stone-900 group-hover:scale-125 transition"></div>
+        <span class="hidden md:block absolute -left-28 top-0 font-cinzel font-bold text-sm text-gold-400">1645</span>
+        <div class="maratha-border bg-obsidian-900/90 p-6 rounded-lg">
+          <span class="md:hidden inline-block text-xs font-cinzel font-bold text-gold-400 mb-1">1645</span>
+          <h3 class="font-cinzel text-lg font-bold text-gold-200">The Oath of Swarajya at Raireshwar</h3>
+          <p class="text-xs sm:text-sm text-stone-300 font-sans mt-2">
+            At the tender age of 15, Shivaji Maharaj and his Mawala companions cut their thumbs to offer a blood covenant before Bhagwan Shiva at Raireshwar Temple, dedicating their lives to establish *Hindavi Swarajya*.
+          </p>
+        </div>
+      </div>
+
+      <!-- Event 3 -->
+      <div class="relative pl-8 md:pl-12 group">
+        <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-saffron-500 border-2 border-gold-300 group-hover:scale-125 transition"></div>
+        <span class="hidden md:block absolute -left-28 top-0 font-cinzel font-bold text-sm text-gold-400">1646</span>
+        <div class="maratha-border bg-obsidian-900/90 p-6 rounded-lg">
+          <span class="md:hidden inline-block text-xs font-cinzel font-bold text-gold-400 mb-1">1646</span>
+          <h3 class="font-cinzel text-lg font-bold text-gold-200">Capture of Torna (Prachandgad)</h3>
+          <p class="text-xs sm:text-sm text-stone-300 font-sans mt-2">
+            First fort captured by Shivaji Maharaj without bloodshed from Adilshahi. Treasure unearthed during reconstruction at Torna directly funded the construction of the formidable Rajgad Fort.
+          </p>
+        </div>
+      </div>
+
+      <!-- Event 4 -->
+      <div class="relative pl-8 md:pl-12 group">
+        <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-gold-500 border-2 border-stone-900 group-hover:scale-125 transition"></div>
+        <span class="hidden md:block absolute -left-28 top-0 font-cinzel font-bold text-sm text-gold-400">10 NOV 1659</span>
+        <div class="maratha-border bg-obsidian-900/90 p-6 rounded-lg">
+          <span class="md:hidden inline-block text-xs font-cinzel font-bold text-gold-400 mb-1">10 NOV 1659</span>
+          <h3 class="font-cinzel text-lg font-bold text-gold-200">Battle of Pratapgad & Slaying of Afzal Khan</h3>
+          <p class="text-xs sm:text-sm text-stone-300 font-sans mt-2">
+            In the dense jawli forests beneath Pratapgad, Shivaji Maharaj counteracted Afzal Khan's treacherous assassination attempt with the concealed Wagh Nakh (tiger claws) and Bichwa, decimating the Bijapuri host.
+          </p>
+        </div>
+      </div>
+
+      <!-- Event 5 -->
+      <div class="relative pl-8 md:pl-12 group">
+        <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-saffron-500 border-2 border-gold-300 group-hover:scale-125 transition"></div>
+        <span class="hidden md:block absolute -left-28 top-0 font-cinzel font-bold text-sm text-gold-400">1666</span>
+        <div class="maratha-border bg-obsidian-900/90 p-6 rounded-lg">
+          <span class="md:hidden inline-block text-xs font-cinzel font-bold text-gold-400 mb-1">1666</span>
+          <h3 class="font-cinzel text-lg font-bold text-gold-200">The Great Escape from Agra</h3>
+          <p class="text-xs sm:text-sm text-stone-300 font-sans mt-2">
+            Placed under house arrest by Aurangzeb at Agra, Shivaji Maharaj and young Prince Sambhaji executed an ingenious escape hidden inside sweet hampers, evading Mughal scouts across a 1,000-mile journey back to Maharashtra.
+          </p>
+        </div>
+      </div>
+
+      <!-- Event 6 -->
+      <div class="relative pl-8 md:pl-12 group">
+        <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-gold-500 border-2 border-stone-900 group-hover:scale-125 transition"></div>
+        <span class="hidden md:block absolute -left-28 top-0 font-cinzel font-bold text-sm text-gold-400">06 JUN 1674</span>
+        <div class="maratha-border bg-maroon-900/60 p-6 rounded-lg border-gold-500">
+          <span class="md:hidden inline-block text-xs font-cinzel font-bold text-gold-400 mb-1">06 JUN 1674</span>
+          <h3 class="font-cinzel text-xl font-bold text-gold-300">Grand Rajyabhisheka (Coronation) at Raigad</h3>
+          <p class="text-xs sm:text-sm text-stone-200 font-sans mt-2">
+            Consecrated as Chhatrapati by Gaga Bhatt atop Fort Raigad. The formal coronation asserted absolute Hindu sovereign authority, introducing the Raj Shaka era and royal gold 'Hon' coinage.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= SECTION: BATTLES & GUERRILLA WARFARE (GANIMI KAVA) ================= -->
+  <section id="battles" class="py-20 bg-royal-gradient border-t border-b border-gold-500/25">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="text-xs font-cinzel uppercase tracking-[0.3em] text-saffron-500 font-bold block mb-2">Tactical Supremacy</span>
+        <h2 class="font-cinzelDeco text-3xl sm:text-4xl text-gold-300 font-bold mb-3">Ganimi Kava & Legendary Engagements</h2>
+        <p class="text-stone-300 text-sm font-sans">
+          How light cavalry, intimate topographical knowledge, and sudden ambushes overwhelmed mammoth imperial armies.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <!-- Tactic 1 -->
+        <div class="maratha-border bg-obsidian-900/90 p-7 rounded-xl hover:-translate-y-2 transition duration-300">
+          <div class="w-12 h-12 rounded-lg bg-maroon-900 flex items-center justify-center text-gold-400 text-xl mb-5 border border-gold-500/30">
+            <i class="fa-solid fa-mountain-sun"></i>
+          </div>
+          <h3 class="font-cinzel text-lg font-bold text-gold-200 mb-2">Ambush at Umbrkhind (1661)</h3>
+          <p class="text-xs sm:text-sm text-stone-400 font-sans leading-relaxed">
+            Kartalab Khan and Rai Bagan's 20,000 strong Mughal army was lured into a claustrophobic mountain pass in the Western Ghats. Without firing an open field volley, Maratha archers and horn-blowers from concealed cliffs forced total unconditional surrender.
+          </p>
+          <div class="mt-4 pt-3 border-t border-gold-500/20 text-[11px] font-cinzel text-gold-400 flex items-center justify-between">
+            <span>Terrain As Weapon</span>
+            <span class="text-stone-400">Zero Casualties</span>
+          </div>
+        </div>
+
+        <!-- Tactic 2 -->
+        <div class="maratha-border bg-obsidian-900/90 p-7 rounded-xl hover:-translate-y-2 transition duration-300">
+          <div class="w-12 h-12 rounded-lg bg-maroon-900 flex items-center justify-center text-gold-400 text-xl mb-5 border border-gold-500/30">
+            <i class="fa-solid fa-shield-virus"></i>
+          </div>
+          <h3 class="font-cinzel text-lg font-bold text-gold-200 mb-2">Battle of Salher (1672)</h3>
+          <p class="text-xs sm:text-sm text-stone-400 font-sans leading-relaxed">
+            The largest open-field pitch battle between the Marathas and the Mughal Empire. Near the highest fort in Maharashtra, Maratha cavalry under Prataprao Gujar routed the combined armies of Ikhlas Khan and Bahlol Khan in open plains.
+          </p>
+          <div class="mt-4 pt-3 border-t border-gold-500/20 text-[11px] font-cinzel text-gold-400 flex items-center justify-between">
+            <span>Open Cavalry Charge</span>
+            <span class="text-stone-400">100,000+ Forces</span>
+          </div>
+        </div>
+
+        <!-- Tactic 3 -->
+        <div class="maratha-border bg-obsidian-900/90 p-7 rounded-xl hover:-translate-y-2 transition duration-300">
+          <div class="w-12 h-12 rounded-lg bg-maroon-900 flex items-center justify-center text-gold-400 text-xl mb-5 border border-gold-500/30">
+            <i class="fa-solid fa-ship"></i>
+          </div>
+          <h3 class="font-cinzel text-lg font-bold text-gold-200 mb-2">Naval Ascendancy & Padmadurg</h3>
+          <p class="text-xs sm:text-sm text-stone-400 font-sans leading-relaxed">
+            To break the Siddis of Janjira, the Portuguese, and English dominance of Konkan trade, Shivaji Maharaj built Sindhudurg, Suvarnadurg, and Padmadurg, creating India's first indigenously organized navy of Gurabs and Galbats.
+          </p>
+          <div class="mt-4 pt-3 border-t border-gold-500/20 text-[11px] font-cinzel text-gold-400 flex items-center justify-between">
+            <span>Father of Indian Navy</span>
+            <span class="text-stone-400">Arvi / Konkan Sea</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SECTION: ARCHITECTURAL GENIUS ================= -->
+  <section id="architecture" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <span class="text-xs font-cinzel uppercase tracking-[0.3em] text-saffron-500 font-bold block mb-2">Engineering of the Sahyadri</span>
+      <h2 class="font-cinzelDeco text-3xl sm:text-4xl text-gold-300 font-bold mb-3">Maratha Fort Architecture</h2>
+      <p class="text-stone-400 text-sm font-sans">
+        The geometric and strategic marvels described in the contemporary treaty <em>Ramchandra Pant Amatya's Adnyapatra</em>: "Forts are the very essence of Swarajya."
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+      <div class="space-y-6">
+        
+        <!-- Arch Feature 1 -->
+        <div class="maratha-border bg-obsidian-900/70 p-5 rounded-lg flex items-start gap-4">
+          <div class="p-3 bg-maroon-950 rounded text-gold-400 border border-gold-500/30 text-xl">
+            <i class="fa-solid fa-archway"></i>
+          </div>
+          <div>
+            <h4 class="font-cinzel text-base font-bold text-gold-300">Gomukhi Darwaja (Cow-Mouth Gate)</h4>
+            <p class="text-xs text-stone-400 mt-1 font-sans leading-relaxed">
+              Main gates were intentionally constructed between two overlapping bastion bastions with a 90-degree curved blind entrance. Artillery and battering rams could never gain direct straight-line momentum.
+            </p>
+          </div>
+        </div>
+
+        <!-- Arch Feature 2 -->
+        <div class="maratha-border bg-obsidian-900/70 p-5 rounded-lg flex items-start gap-4">
+          <div class="p-3 bg-maroon-950 rounded text-gold-400 border border-gold-500/30 text-xl">
+            <i class="fa-solid fa-faucet-drip"></i>
+          </div>
+          <div>
+            <h4 class="font-cinzel text-base font-bold text-gold-300">Natural Rainwater Harvesting Cisterns</h4>
+            <p class="text-xs text-stone-400 mt-1 font-sans leading-relaxed">
+              Perched atop rock massifs without perennial rivers, forts featured carved rock water tanks (*Tanks of Ganga-Jamuna*). Shivaji Maharaj decreed: <em>"A fort must have water to sustain garrisons through two full summers."</em>
+            </p>
+          </div>
+        </div>
+
+        <!-- Arch Feature 3 -->
+        <div class="maratha-border bg-obsidian-900/70 p-5 rounded-lg flex items-start gap-4">
+          <div class="p-3 bg-maroon-950 rounded text-gold-400 border border-gold-500/30 text-xl">
+            <i class="fa-solid fa-anchor"></i>
+          </div>
+          <div>
+            <h4 class="font-cinzel text-base font-bold text-gold-300">Lead-Molten Marine Foundations</h4>
+            <p class="text-xs text-stone-400 mt-1 font-sans leading-relaxed">
+              At Sindhudurg, hundreds of metric tons of molten lead and iron were poured into bedrock fissures under roaring sea waters to anchor underwater foundation stones against fierce Arabian Sea monsoons.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Architectural Diagrammatic Card -->
+      <div class="maratha-border bg-gradient-to-br from-maroon-950 to-obsidian-900 p-8 rounded-2xl relative overflow-hidden">
+        <div class="border-b border-gold-500/30 pb-4 mb-6">
+          <span class="text-[10px] font-cinzel text-saffron-500 uppercase tracking-widest font-bold">Royal Doctrine Excerpt</span>
+          <h3 class="font-cinzel text-2xl font-bold text-gold-300 mt-1">The Adnyapatra Testament</h3>
+        </div>
+        <blockquote class="font-serif italic text-stone-300 text-sm leading-relaxed mb-6">
+          "The forts are the soul of the kingdom. If there are no forts, the kingdom will be swept away like a dry leaf in a storm... As the sea has the ocean bed, so a king must have forts on high peaks."
+        </blockquote>
+        <div class="grid grid-cols-2 gap-4 text-center">
+          <div class="bg-obsidian-950/80 p-3 rounded border border-gold-500/20">
+            <span class="text-gold-400 font-cinzel text-sm font-bold block">Chhatri & Machi</span>
+            <span class="text-[10px] text-stone-400 font-sans">Multi-tier outer ridge defenses</span>
+          </div>
+          <div class="bg-obsidian-950/80 p-3 rounded border border-gold-500/20">
+            <span class="text-gold-400 font-cinzel text-sm font-bold block">Buruj (Bastions)</span>
+            <span class="text-[10px] text-stone-400 font-sans">360-degree interlocking firing arcs</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SECTION: CURATED GALLERY & LIGHTBOX ================= -->
+  <section id="gallery" class="py-20 bg-obsidian-900 border-t border-b border-gold-500/20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-12">
+        <span class="text-xs font-cinzel uppercase tracking-[0.3em] text-saffron-500 font-bold block mb-2">Visual Heritage</span>
+        <h2 class="font-cinzelDeco text-3xl sm:text-4xl text-gold-300 font-bold mb-3">Cinematic Fort Gallery</h2>
+        <p class="text-stone-400 text-sm font-sans">
+          Atmospheric perspectives of the majestic stones standing sentinel through centuries. Click to enlarge.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Photo 1 -->
+        <div onclick="openLightbox('https://images.unsplash.com/photo-1590483250269-0744f475ee46?auto=format&fit=crop&w=1600&q=80', 'Fort Raigad - The Royal Throne Platform (Maha Darwaja)')" class="group relative h-64 rounded-lg overflow-hidden cursor-pointer maratha-border">
+          <img src="https://images.unsplash.com/photo-1590483250269-0744f475ee46?auto=format&fit=crop&w=800&q=80" alt="Fort Raigad" class="w-full h-full object-cover group-hover:scale-110 transition duration-700 brightness-90">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex items-end p-4">
+            <span class="font-cinzel text-xs font-bold text-gold-300">Raigad • Maha Darwaja</span>
+          </div>
+        </div>
+
+        <!-- Photo 2 -->
+        <div onclick="openLightbox('https://images.unsplash.com/photo-1609137144813-7d9921338f24?auto=format&fit=crop&w=1600&q=80', 'Sinhagad Fort - Tanaji Malusare Bastion & Pune Ridge')" class="group relative h-64 rounded-lg overflow-hidden cursor-pointer maratha-border">
+          <img src="https://images.unsplash.com/photo-1609137144813-7d9921338f24?auto=format&fit=crop&w=800&q=80" alt="Sinhagad Fort" class="w-full h-full object-cover group-hover:scale-110 transition duration-700 brightness-90">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex items-end p-4">
+            <span class="font-cinzel text-xs font-bold text-gold-300">Sinhagad • Kondhana Bastion</span>
+          </div>
+        </div>
+
+        <!-- Photo 3 -->
+        <div onclick="openLightbox('https://images.unsplash.com/photo-1616423640778-28d1b53229bd?auto=format&fit=crop&w=1600&q=80', 'Sindhudurg Fort - Sea Walls Rising from the Arabian Sea')" class="group relative h-64 rounded-lg overflow-hidden cursor-pointer maratha-border">
+          <img src="https://images.unsplash.com/photo-1616423640778-28d1b53229bd?auto=format&fit=crop&w=800&q=80" alt="Sindhudurg Fort" class="w-full h-full object-cover group-hover:scale-110 transition duration-700 brightness-90">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex items-end p-4">
+            <span class="font-cinzel text-xs font-bold text-gold-300">Sindhudurg • Ocean Ramparts</span>
+          </div>
+        </div>
+
+        <!-- Photo 4 -->
+        <div onclick="openLightbox('https://images.unsplash.com/photo-1627894483216-2138af692e32?auto=format&fit=crop&w=1600&q=80', 'Pratapgad - Mahabaleshwar Valley Sentinel')" class="group relative h-64 rounded-lg overflow-hidden cursor-pointer maratha-border">
+          <img src="https://images.unsplash.com/photo-1627894483216-2138af692e32?auto=format&fit=crop&w=800&q=80" alt="Pratapgad Fort" class="w-full h-full object-cover group-hover:scale-110 transition duration-700 brightness-90">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex items-end p-4">
+            <span class="font-cinzel text-xs font-bold text-gold-300">Pratapgad • Jawli Watchtower</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= LIGHTBOX MODAL ================= -->
+  <div id="lightboxModal" class="fixed inset-0 z-50 bg-black/95 hidden items-center justify-center p-4">
+    <button onclick="closeLightbox()" class="absolute top-6 right-8 text-gold-400 hover:text-white text-3xl z-50">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    <div class="max-w-5xl w-full text-center">
+      <img id="lightboxImg" src="" alt="Fort View" class="max-h-[80vh] mx-auto rounded maratha-border object-contain">
+      <p id="lightboxCaption" class="font-cinzel text-gold-300 mt-4 text-sm tracking-widest"></p>
+    </div>
+  </div>
+
+  <!-- ================= SECTION: ABOUT IGMIRAL ================= -->
+  <section id="about" class="py-20 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <div class="inline-block p-4 rounded-full border border-gold-500/30 bg-maroon-900/40 mb-6">
+      <i class="fa-solid fa-monument text-3xl text-gold-400"></i>
+    </div>
+    <span class="text-xs font-cinzel uppercase tracking-[0.3em] text-saffron-500 font-bold block mb-2">Curatorial Mission</span>
+    <h2 class="font-cinzelDeco text-3xl sm:text-4xl text-gold-300 font-bold mb-6">About Swarajya Atlas & IGMIRAL</h2>
+    <p class="font-sans text-stone-300 text-sm sm:text-base leading-relaxed mb-6">
+      <strong class="text-gold-300">SWARAJYA ATLAS</strong> is an interactive digital preservation initiative presented by <strong class="text-gold-300">IGMIRAL</strong>. Our charter is to bring the timeless fortification architecture, coastal dockyards, and military discipline of Chhatrapati Shivaji Maharaj to researchers, students, and travelers globally through high-fidelity cartography and historically rigorous documentation.
+    </p>
+    <p class="font-sans text-stone-400 text-xs sm:text-sm max-w-3xl mx-auto">
+      Every fort in this atlas represents more than basalt masonry; it symbolizes the collective vow of social justice, religious liberty, and unyielding self-governance (*Hindavi Swarajya*).
+    </p>
+  </section>
+
+  <!-- ================= SECTION: CONTACT / EXPEDITION DESK ================= -->
+  <section id="contact" class="py-20 bg-royal-gradient border-t border-gold-500/25">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <span class="text-xs font-cinzel uppercase tracking-[0.3em] text-saffron-500 font-bold block mb-2">Engage With Historians</span>
+        <h2 class="font-cinzelDeco text-3xl text-gold-300 font-bold mb-3">Expedition Desk & Inquiries</h2>
+        <p class="text-stone-300 text-xs sm:text-sm font-sans">
+          Submit fort exploration logs, historical queries, or request academic guides for research expeditions across Sahyadri.
+        </p>
+      </div>
+
+      <form id="expeditionForm" onsubmit="handleFormSubmit(event)" class="maratha-border bg-obsidian-900/90 p-8 rounded-xl space-y-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div>
+            <label class="block font-cinzel text-xs text-gold-300 uppercase tracking-wider mb-2">Explorer Name *</label>
+            <input type="text" required placeholder="e.g. Tanaji Kadam" class="w-full bg-obsidian-950 border border-gold-500/30 rounded px-4 py-2.5 text-xs text-stone-200 focus:outline-none focus:border-gold-400">
+          </div>
+          <div>
+            <label class="block font-cinzel text-xs text-gold-300 uppercase tracking-wider mb-2">Email Address *</label>
+            <input type="email" required placeholder="name@domain.com" class="w-full bg-obsidian-950 border border-gold-500/30 rounded px-4 py-2.5 text-xs text-stone-200 focus:outline-none focus:border-gold-400">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div>
+            <label class="block font-cinzel text-xs text-gold-300 uppercase tracking-wider mb-2">Subject / Fort of Interest</label>
+            <input type="text" placeholder="e.g. Raigad Excavations, Sindhudurg Scuba" class="w-full bg-obsidian-950 border border-gold-500/30 rounded px-4 py-2.5 text-xs text-stone-200 focus:outline-none focus:border-gold-400">
+          </div>
+          <div>
+            <label class="block font-cinzel text-xs text-gold-300 uppercase tracking-wider mb-2">Inquiry Type</label>
+            <select class="w-full bg-obsidian-950 border border-gold-500/30 rounded px-4 py-2.5 text-xs text-stone-200 focus:outline-none focus:border-gold-400">
+              <option>Historical Research</option>
+              <option>Trek & Route Consultation</option>
+              <option>IGMIRAL Educational Partnership</option>
+              <option>Photo Contribution</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-cinzel text-xs text-gold-300 uppercase tracking-wider mb-2">Field Notes / Message *</label>
+          <textarea rows="4" required placeholder="Share your research, inquiry, or field expedition requirements..." class="w-full bg-obsidian-950 border border-gold-500/30 rounded px-4 py-2.5 text-xs text-stone-200 focus:outline-none focus:border-gold-400"></textarea>
+        </div>
+
+        <div class="text-center">
+          <button type="submit" class="px-8 py-3 bg-gradient-to-r from-gold-500 to-amber-600 text-obsidian-950 font-cinzel font-bold text-xs uppercase tracking-widest rounded hover:shadow-lg hover:shadow-gold-500/20 transition duration-300">
+            Transmit Expedition Note
+          </button>
+        </div>
+      </form>
+
+      <!-- Toast Feedback -->
+      <div id="formSuccessToast" class="hidden mt-4 p-4 rounded bg-maroon-900 border border-gold-500 text-center text-xs font-cinzel text-gold-300">
+        <i class="fa-solid fa-circle-check mr-2 text-saffron-500"></i> Record transmitted to IGMIRAL historical desk.
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FORT DETAIL MODAL ================= -->
+  <div id="fortDetailModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="maratha-border bg-obsidian-900 max-w-3xl w-full rounded-2xl overflow-hidden shadow-2xl max-h-[90vh] flex flex-col relative">
+      
+      <!-- Close Button -->
+      <button onclick="closeFortModal()" class="absolute top-4 right-5 text-gold-400 hover:text-white text-2xl z-20">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <!-- Modal Image Banner -->
+      <div class="relative h-56 sm:h-64 w-full overflow-hidden flex-shrink-0">
+        <img id="modalFortImg" src="" alt="Fort Cover" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-gradient-to-t from-obsidian-900 via-obsidian-900/40 to-transparent"></div>
+        <div class="absolute bottom-4 left-6 right-6">
+          <span id="modalFortType" class="text-[10px] uppercase font-cinzel px-2.5 py-0.5 rounded bg-saffron-600 font-bold text-white tracking-widest">Type</span>
+          <h3 id="modalFortTitle" class="font-cinzel text-2xl sm:text-3xl font-extrabold text-gold-300 mt-1">Fort Title</h3>
+          <span id="modalFortDistrict" class="text-xs text-stone-300 font-sans"><i class="fa-solid fa-location-dot text-gold-500 mr-1"></i> District</span>
+        </div>
+      </div>
+
+      <!-- Modal Content Body -->
+      <div class="p-6 overflow-y-auto space-y-6 text-stone-300 text-xs sm:text-sm font-sans">
+        
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center border-y border-gold-500/20 py-3">
+          <div>
+            <div class="text-[10px] uppercase font-cinzel text-stone-400">Elevation</div>
+            <div id="modalElevation" class="text-gold-300 font-bold text-xs">--</div>
+          </div>
+          <div>
+            <div class="text-[10px] uppercase font-cinzel text-stone-400">Key Bastion</div>
+            <div id="modalBastion" class="text-gold-300 font-bold text-xs">--</div>
+          </div>
+          <div>
+            <div class="text-[10px] uppercase font-cinzel text-stone-400">Era of Rule</div>
+            <div id="modalEra" class="text-gold-300 font-bold text-xs">17th Century</div>
+          </div>
+          <div>
+            <div class="text-[10px] uppercase font-cinzel text-stone-400">Strategic Status</div>
+            <div id="modalStatus" class="text-gold-300 font-bold text-xs">Unconquered</div>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-cinzel text-gold-300 font-bold text-xs uppercase tracking-wider mb-1">Strategic Importance</h4>
+          <p id="modalDescription" class="text-stone-300 leading-relaxed"></p>
+        </div>
+
+        <div>
+          <h4 class="font-cinzel text-gold-300 font-bold text-xs uppercase tracking-wider mb-1">Historic Milestones</h4>
+          <p id="modalHistory" class="text-stone-400 leading-relaxed"></p>
+        </div>
+
+        <div class="pt-2 flex justify-between items-center border-t border-gold-500/20">
+          <span class="text-[11px] font-cinzel text-stone-400">Preserved in Swarajya Archives • IGMIRAL</span>
+          <button onclick="closeFortModal()" class="px-5 py-2 bg-gold-500 text-obsidian-950 font-cinzel font-bold text-xs rounded hover:bg-gold-400 transition">
+            Close File
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="bg-obsidian-950 border-t border-gold-500/30 py-12 text-stone-400 font-sans text-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+      
+      <!-- Col 1 -->
+      <div class="space-y-3">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-shield-cat text-gold-400 text-lg"></i>
+          <span class="font-cinzel text-gold-300 font-bold text-base tracking-wider">SWARAJYA ATLAS</span>
+        </div>
+        <p class="text-[11px] text-stone-500 leading-relaxed">
+          The sovereign cartographic atlas documenting the 350+ stone bastions of Chhatrapati Shivaji Maharaj. An IGMIRAL digital heritage production.
+        </p>
+      </div>
+
+      <!-- Col 2 -->
+      <div>
+        <h4 class="font-cinzel text-gold-300 font-bold text-xs uppercase tracking-wider mb-3">Core Forts</h4>
+        <ul class="space-y-1.5 text-[11px]">
+          <li><a href="#map-section" onclick="openFortModalByName('Fort Raigad')" class="hover:text-gold-400 transition">Raigad (Capital of Swarajya)</a></li>
+          <li><a href="#map-section" onclick="openFortModalByName('Rajgad')" class="hover:text-gold-400 transition">Rajgad (Seat of 26 Years)</a></li>
+          <li><a href="#map-section" onclick="openFortModalByName('Sindhudurg')" class="hover:text-gold-400 transition">Sindhudurg (Ocean Fortress)</a></li>
+          <li><a href="#map-section" onclick="openFortModalByName('Pratapgad')" class="hover:text-gold-400 transition">Pratapgad (Afzal Khan Battle)</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 3 -->
+      <div>
+        <h4 class="font-cinzel text-gold-300 font-bold text-xs uppercase tracking-wider mb-3">Heritage Pillars</h4>
+        <ul class="space-y-1.5 text-[11px]">
+          <li><a href="#battles" class="hover:text-gold-400 transition">Ganimi Kava Guerrilla Tactics</a></li>
+          <li><a href="#architecture" class="hover:text-gold-400 transition">Adnyapatra Architectural Codes</a></li>
+          <li><a href="#architecture" class="hover:text-gold-400 transition">Maratha Naval Dockyards</a></li>
+          <li><a href="#timeline" class="hover:text-gold-400 transition">1674 Coronation Annals</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 4 -->
+      <div>
+        <h4 class="font-cinzel text-gold-300 font-bold text-xs uppercase tracking-wider mb-3">Salute to Hindavi Swarajya</h4>
+        <p class="text-[11px] text-stone-500 mb-3">
+          Designed with reverence to the immortal Maratha spirit. All historical dates cross-referenced with Sabhasad Bakhar and Jedhe Shakavali.
+        </p>
+        <span class="inline-block text-[10px] text-gold-500 font-cinzel border border-gold-500/30 px-2 py-1 rounded">
+          © IGMIRAL • SWARAJYA ATLAS
+        </span>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ================= JAVASCRIPT LOGIC ================= -->
+  <script>
+    /* ==========================================================
+       1. DATA DEFINITIONS (FORTS & MULTILINGUAL STRINGS)
+       ========================================================== */
+    const fortsData = [
+      {
+        id: 'raigad',
+        name: 'Fort Raigad',
+        nameMr: 'किल्ले रायगड',
+        type: 'capital',
+        typeLabel: 'Capital / Giridurga',
+        coords: [18.2346, 73.4418],
+        district: 'Mahad, Raigad',
+        elevation: '820 m (2,700 ft)',
+        bastion: 'Maha Darwaja & Hirkani Buruj',
+        img: 'https://images.unsplash.com/photo-1590483250269-0744f475ee46?auto=format&fit=crop&w=800&q=80',
+        summary: 'The capital of Swarajya chosen by Shivaji Maharaj in 1670. Here, on June 6, 1674, the historic Rajyabhisheka (Coronation) ceremony was consecrated.',
+        summaryMr: 'स्वराज्याची राजधानी. १६७४ मध्ये छत्रपती शिवाजी महाराजांचा राज्याभिषेक सोहळा याच गडावर संपन्न झाला.',
+        history: 'Originally called Rairi, rebuilt extensively by chief engineer Hiroji Indulkar into an impregnable royal citadel containing palaces, market places (Peth), and the royal court (Darbar).'
+      },
+      {
+        id: 'rajgad',
+        name: 'Fort Rajgad',
+        nameMr: 'किल्ले राजगड',
+        type: 'giridurga',
+        typeLabel: 'Giridurga (King Fort)',
+        coords: [18.2464, 73.6828],
+        district: 'Pune District',
+        elevation: '1,376 m (4,514 ft)',
+        bastion: 'Sanjivani & Suvela Machi',
+        img: 'https://images.unsplash.com/photo-1627894483216-2138af692e32?auto=format&fit=crop&w=800&q=80',
+        summary: 'The capital of the Maratha Empire for over 26 years. Shivaji Maharaj spent the longest portion of his sovereign life planning expeditions here.',
+        summaryMr: '२६ वर्षांपेक्षा जास्त काळ स्वराज्याची पहिली राजधानी. बालेकिल्ला, संजीवनी आणि सुवेळा माचीचे अभेद्य संरक्षण.',
+        history: 'Features three expansive Machis (plateaus) and the towering triangular Balekilla citadel that commands panoramic views across the Sahyadri range.'
+      },
+      {
+        id: 'sindhudurg',
+        name: 'Fort Sindhudurg',
+        nameMr: 'किल्ले सिंधुदुर्ग',
+        type: 'jaldurga',
+        typeLabel: 'Jaldurga (Sea Fortress)',
+        coords: [16.0469, 73.4631],
+        district: 'Malvan, Sindhudurg',
+        elevation: '0 m (Offshore Isle)',
+        bastion: '42 Towering Bastions',
+        img: 'https://images.unsplash.com/photo-1616423640778-28d1b53229bd?auto=format&fit=crop&w=800&q=80',
+        summary: 'Masterpiece of naval engineering on Kurte island, foundation laid with 100 quintals of lead. Houses the only temple of Shivaji Maharaj with his footprints.',
+        summaryMr: 'छत्रपतींनी कुरटे बेटावर उभारलेला अभेद्य जलदुर्ग. १०० खंडी शिसे वितळवून पायाभरणी करण्यात आली.',
+        history: 'Designed by Hiroji Indulkar between 1664–1667 to neutralize the naval threats posed by the Siddis, British, and the Portuguese navy along the Konkan coast.'
+      },
+      {
+        id: 'pratapgad',
+        name: 'Fort Pratapgad',
+        nameMr: 'किल्ले प्रतापगड',
+        type: 'giridurga',
+        typeLabel: 'Giridurga (Battle Citadel)',
+        coords: [17.9298, 73.5786],
+        district: 'Satara District',
+        elevation: '1,080 m (3,540 ft)',
+        bastion: 'Bhavani Mata Temple Bastion',
+        img: 'https://images.unsplash.com/photo-1609137144813-7d9921338f24?auto=format&fit=crop&w=800&q=80',
+        summary: 'Site of the historic duel between Shivaji Maharaj and Afzal Khan in 1659. The battle broke the aura of Adilshahi invincibility forever.',
+        summaryMr: 'अफझलखानाचा कोथळा बाहेर काढून विजापूरच्या आदिलशाहीला हादरा देणाऱ्या ऐतिहासिक युद्धाचे ठिकाण.',
+        history: 'Engineered by Prime Minister Moropant Trimbak Pingle to guard the banks of the Nira and Koyna rivers and control the dense mountain passes of Jawli.'
+      },
+      {
+        id: 'sinhagad',
+        name: 'Fort Sinhagad (Kondhana)',
+        nameMr: 'किल्ले सिंहगड (कोंढाणा)',
+        type: 'giridurga',
+        typeLabel: 'Giridurga (Lion Fort)',
+        coords: [18.3664, 73.7558],
+        district: 'Pune District',
+        elevation: '1,312 m (4,304 ft)',
+        bastion: 'Kalyan Darwaja & Tanaji Kada',
+        img: 'https://images.unsplash.com/photo-1590483250269-0744f475ee46?auto=format&fit=crop&w=800&q=80',
+        summary: 'Immortalized by the sacrifice of Subedar Tanaji Malusare in 1670, who scaled the near-vertical Donagiri cliff by night to recapture it.',
+        summaryMr: 'सुभेदार तानाजी मालुसरे यांच्या अतुलनीय शौर्याने पावन झालेला गड. "गड आला पण सिंह गेला!"',
+        history: 'Strategically positioned in the Bhuleshwar range, commanding Pune valley. The battle of 1670 remains one of the greatest commando assaults in world history.'
+      },
+      {
+        id: 'shivneri',
+        name: 'Fort Shivneri',
+        nameMr: 'किल्ले शिवनेरी',
+        type: 'giridurga',
+        typeLabel: 'Giridurga (Birthplace)',
+        coords: [19.1979, 73.8601],
+        district: 'Junnar, Pune',
+        elevation: '1,040 m (3,412 ft)',
+        bastion: 'Seven Layered Gates (Saat Darwaje)',
+        img: 'https://images.unsplash.com/photo-1627894483216-2138af692e32?auto=format&fit=crop&w=800&q=80',
+        summary: 'The birthplace of Chhatrapati Shivaji Maharaj (1630). Features seven successive fortified gateway barriers making frontal infantry assaults impossible.',
+        summaryMr: 'छत्रपती शिवाजी महाराजांचे जन्मस्थान. सात अभेद्य दरवाज्यांची मजबूत तटबंदी.',
+        history: 'An ancient fortress dating back to the Satavahana era, containing water cisterns called Badami Talav and the shrine of Goddess Shivai Devi.'
+      },
+      {
+        id: 'torna',
+        name: 'Fort Torna (Prachandgad)',
+        nameMr: 'किल्ले तोरणा (प्रचंडगड)',
+        type: 'giridurga',
+        typeLabel: 'Giridurga (First Conquest)',
+        coords: [18.2778, 73.6183],
+        district: 'Pune District',
+        elevation: '1,403 m (4,603 ft)',
+        bastion: 'Zunjar Machi & Budhla Machi',
+        img: 'https://images.unsplash.com/photo-1609137144813-7d9921338f24?auto=format&fit=crop&w=800&q=80',
+        summary: 'The very first fort conquered by a 16-year-old Shivaji Maharaj in 1646, marking the ignition point of the Swarajya revolution.',
+        summaryMr: 'सोळाव्या वर्षी महाराजांनी जिंकलेला स्वराज्याचा पहिला किल्ला. प्रचंडगडाचे विशाल बुरुज.',
+        history: 'One of the highest forts in Pune. The gold coins discovered during its fortification directly financed the construction of Rajgad.'
+      },
+      {
+        id: 'panhala',
+        name: 'Fort Panhala',
+        nameMr: 'किल्ले पन्हाळा',
+        type: 'giridurga',
+        typeLabel: 'Giridurga (Southern Anchor)',
+        coords: [16.8123, 74.1189],
+        district: 'Kolhapur District',
+        elevation: '845 m (2,772 ft)',
+        bastion: 'Teen Darwaja & Sajja Kothi',
+        img: 'https://images.unsplash.com/photo-1590483250269-0744f475ee46?auto=format&fit=crop&w=800&q=80',
+        summary: 'Scene of the dramatic monsoon siege by Siddi Jauhar and the legendary breakout towards Vishalgad protected by Baji Prabhu Deshpande at Pavan Khind.',
+        summaryMr: 'सिद्दी जौहरच्या वेढ्यातून थरारक सुटका आणि पावनखिंडीतील वीर बाजीप्रभू देशपांडे यांचे पराक्रम.',
+        history: 'Contains 7 km of massive ramparts, Amberkhana granaries, and the Sajja Kothi where Sambhaji Maharaj was stationed.'
+      },
+      {
+        id: 'vijaydurg',
+        name: 'Fort Vijaydurg (Gheria)',
+        nameMr: 'किल्ले विजयदुर्ग',
+        type: 'jaldurga',
+        typeLabel: 'Jaldurga (Naval Base)',
+        coords: [16.5594, 73.3328],
+        district: 'Sindhudurg',
+        elevation: 'Sea Level Ramparts',
+        bastion: 'Triple Moat Ramparts',
+        img: 'https://images.unsplash.com/photo-1616423640778-28d1b53229bd?auto=format&fit=crop&w=800&q=80',
+        summary: 'Known as the "Eastern Gibraltar" by European navies. Kanhoji Angre later made it the main base of the undefeated Maratha naval fleet.',
+        summaryMr: 'मराठा आरमाराचे मुख्य केंद्र. युरोपियन लोक याला "पूर्वेचा जिब्राल्टर" म्हणत असत.',
+        history: 'Equipped with an underwater man-made stone wall (200m offshore) that secretly grounded hostile foreign ships attempting bombardment.'
+      },
+      {
+        id: 'lohagad',
+        name: 'Fort Lohagad',
+        nameMr: 'किल्ले लोहगड',
+        type: 'giridurga',
+        typeLabel: 'Giridurga (Iron Fort)',
+        coords: [18.7077, 73.4795],
+        district: 'Lonavala, Pune',
+        elevation: '1,033 m (3,389 ft)',
+        bastion: 'Vinchu Kata (Scorpion Tail)',
+        img: 'https://images.unsplash.com/photo-1627894483216-2138af692e32?auto=format&fit=crop&w=800&q=80',
+        summary: 'Celebrated for its striking 1.5 km long defensive spur resembling a scorpion tail (Vinchu Kata), providing impregnable flank watch.',
+        summaryMr: 'विंचू काटा माचीचे विलोभनीय व भक्कम नैसर्गिक संरक्षण. सुरतेची संपत्ती साठवण्यासाठी वापर.',
+        history: 'Used extensively to secure the wealth recovered from the Surat expedition before transferring it to the treasury at Rajgad.'
+      }
+    ];
+
+    let currentLang = 'en';
+    let mapInstance = null;
+    let markersLayer = null;
+
+    /* ==========================================================
+       2. LEAFLET MAP INITIALIZATION
+       ========================================================== */
+    function initMaharashtraMap() {
+      // Center around Western Maharashtra / Sahyadri
+      mapInstance = L.map('maharashtraMap', {
+        center: [17.8, 73.8],
+        zoom: 7,
+        minZoom: 6,
+        maxZoom: 14,
+        scrollWheelZoom: false
+      });
+
+      // CartoDB Dark Matter Tiles (historical midnight feel)
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 19
+      }).addTo(mapInstance);
+
+      markersLayer = L.layerGroup().addTo(mapInstance);
+      renderMapMarkers('all');
+    }
+
+    function createCustomMarkerIcon(isSeaFort) {
+      const color = isSeaFort ? '#ff6600' : '#d4af37';
+      const icon = isSeaFort ? 'fa-anchor' : 'fa-chess-rook';
+      return L.divIcon({
+        className: 'custom-leaflet-marker',
+        html: `
+          <div style="background-color: #3d0810; border: 2px solid ${color}; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 14px ${color}; cursor: pointer;">
+            <i class="fa-solid ${icon}" style="color: ${color}; font-size: 14px;"></i>
+          </div>
+        `,
+        iconSize: [34, 34],
+        iconAnchor: [17, 17],
+        popupAnchor: [0, -20]
+      });
+    }
+
+    function renderMapMarkers(filterType) {
+      markersLayer.clearLayers();
+      let count = 0;
+
+      fortsData.forEach(fort => {
+        const isSea = fort.type === 'jaldurga';
+        if (filterType === 'hill' && isSea) return;
+        if (filterType === 'sea' && !isSea) return;
+
+        count++;
+        const marker = L.marker(fort.coords, {
+          icon: createCustomMarkerIcon(isSea)
+        });
+
+        const popupContent = `
+          <div style="min-width: 200px; padding: 4px;">
+            <div style="font-size: 10px; font-weight: bold; color: #ff6600; text-transform: uppercase; letter-spacing: 1px;">${fort.typeLabel}</div>
+            <div style="font-size: 15px; font-weight: bold; color: #d4af37; margin-top: 2px; font-family: 'Cinzel', serif;">${fort.name}</div>
+            <div style="font-size: 11px; color: #bbb; margin-bottom: 6px;">${fort.district} • ${fort.elevation}</div>
+            <p style="font-size: 12px; line-height: 1.4; color: #eee; margin-bottom: 8px;">${fort.summary}</p>
+            <button onclick="openFortModal('${fort.id}')" style="background: #d4af37; color: #230408; border: none; padding: 4px 10px; font-size: 11px; font-weight: bold; border-radius: 4px; cursor: pointer; width: 100%;">
+              Open Full Dossier
+            </button>
+          </div>
+        `;
+
+        marker.bindPopup(popupContent);
+        markersLayer.addLayer(marker);
+      });
+
+      document.getElementById('mapCounter').innerText = count;
+    }
+
+    function filterMapMarkers(type) {
+      document.querySelectorAll('.map-filter-btn').forEach(b => {
+        b.classList.remove('active', 'bg-gold-500', 'text-obsidian-950', 'font-bold');
+        b.classList.add('bg-maroon-900/70', 'text-stone-300');
+      });
+      event.target.classList.add('active', 'bg-gold-500', 'text-obsidian-950', 'font-bold');
+      event.target.classList.remove('bg-maroon-900/70', 'text-stone-300');
+      renderMapMarkers(type);
+    }
+
+    /* ==========================================================
+       3. FORT ENCYCLOPEDIA CARDS GENERATION & SEARCH
+       ========================================================== */
+    function renderFortsGrid(forts) {
+      const container = document.getElementById('fortsGrid');
+      container.innerHTML = '';
+
+      if (forts.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full text-center py-12 text-stone-400 font-cinzel">
+            <i class="fa-solid fa-hourglass-empty text-3xl text-gold-500 mb-2"></i>
+            <p>No fortresses matched your tactical query.</p>
+          </div>
+        `;
+        return;
+      }
+
+      forts.forEach(fort => {
+        const card = document.createElement('div');
+        card.className = "maratha-border bg-obsidian-950 rounded-xl overflow-hidden group hover:-translate-y-2 transition-all duration-300 flex flex-col justify-between";
+        card.innerHTML = `
+          <div>
+            <div class="relative h-48 overflow-hidden">
+              <img src="${fort.img}" alt="${fort.name}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700 brightness-90">
+              <span class="absolute top-3 left-3 px-2 py-0.5 rounded text-[10px] font-cinzel font-bold uppercase tracking-wider ${fort.type === 'jaldurga' ? 'bg-saffron-600 text-white' : 'bg-maroon-900 text-gold-300 border border-gold-500/40'}">
+                ${fort.typeLabel}
+              </span>
+              <span class="absolute bottom-3 right-3 px-2 py-0.5 bg-black/75 backdrop-blur-sm text-[10px] text-stone-300 rounded font-sans">
+                <i class="fa-solid fa-mountain mr-1 text-gold-400"></i> ${fort.elevation}
+              </span>
+            </div>
+            
+            <div class="p-5">
+              <div class="flex items-center justify-between">
+                <h3 class="font-cinzel text-lg font-bold text-gold-300 group-hover:text-gold-200">${fort.name}</h3>
+                <span class="font-marathi text-gold-500/80 text-xs">${fort.nameMr}</span>
+              </div>
+              <p class="text-[11px] text-stone-400 mt-0.5 font-sans mb-3">
+                <i class="fa-solid fa-location-dot text-gold-500/80 mr-1"></i> ${fort.district}
+              </p>
+              <p class="text-xs text-stone-300 font-sans leading-relaxed line-clamp-3">
+                ${currentLang === 'en' ? fort.summary : fort.summaryMr}
+              </p>
+            </div>
+          </div>
+
+          <div class="p-5 pt-0 mt-2">
+            <button onclick="openFortModal('${fort.id}')" class="w-full py-2 bg-maroon-900 hover:bg-maroon-800 border border-gold-500/40 text-gold-300 rounded text-xs font-cinzel font-semibold tracking-wider flex items-center justify-center gap-2 transition">
+              <i class="fa-solid fa-book-open text-xs"></i>
+              <span>INSPECT ARCHIVES</span>
+            </button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function searchForts() {
+      const query = document.getElementById('fortSearchInput').value.toLowerCase();
+      const type = document.getElementById('typeFilter').value;
+
+      const filtered = fortsData.filter(f => {
+        const matchesQuery = f.name.toLowerCase().includes(query) ||
+                             f.nameMr.toLowerCase().includes(query) ||
+                             f.district.toLowerCase().includes(query) ||
+                             f.bastion.toLowerCase().includes(query) ||
+                             f.summary.toLowerCase().includes(query);
+        const matchesType = type === 'all' || f.type === type;
+        return matchesQuery && matchesType;
+      });
+
+      renderFortsGrid(filtered);
+    }
+
+    /* ==========================================================
+       4. MODAL INSPECTOR & LIGHTBOX
+       ========================================================== */
+    function openFortModal(fortId) {
+      const fort = fortsData.find(f => f.id === fortId);
+      if (!fort) return;
+
+      document.getElementById('modalFortImg').src = fort.img;
+      document.getElementById('modalFortTitle').innerText = currentLang === 'en' ? fort.name : `${fort.nameMr} (${fort.name})`;
+      document.getElementById('modalFortType').innerText = fort.typeLabel;
+      document.getElementById('modalFortDistrict').innerHTML = `<i class="fa-solid fa-location-dot text-gold-500 mr-1"></i> ${fort.district}`;
+      document.getElementById('modalElevation').innerText = fort.elevation;
+      document.getElementById('modalBastion').innerText = fort.bastion;
+      document.getElementById('modalDescription').innerText = currentLang === 'en' ? fort.summary : fort.summaryMr;
+      document.getElementById('modalHistory').innerText = fort.history;
+
+      const modal = document.getElementById('fortDetailModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function openFortModalByName(name) {
+      const fort = fortsData.find(f => f.name.toLowerCase().includes(name.toLowerCase()));
+      if (fort) openFortModal(fort.id);
+    }
+
+    function closeFortModal() {
+      const modal = document.getElementById('fortDetailModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function openLightbox(src, caption) {
+      document.getElementById('lightboxImg').src = src;
+      document.getElementById('lightboxCaption').innerText = caption;
+      const lb = document.getElementById('lightboxModal');
+      lb.classList.remove('hidden');
+      lb.classList.add('flex');
+    }
+
+    function closeLightbox() {
+      const lb = document.getElementById('lightboxModal');
+      lb.classList.add('hidden');
+      lb.classList.remove('flex');
+    }
+
+    /* ==========================================================
+       5. AMBIENT AUDIO SYNTHESIZER (WEB AUDIO API)
+       Self-contained royal tanpura/drone synthesizer (no external assets required)
+       ========================================================== */
+    let audioCtx = null;
+    let isPlayingAudio = false;
+    let oscillators = [];
+    let masterGain = null;
+
+    function toggleRoyalAudio() {
+      const btnText = document.getElementById('audioStatusText');
+      const icon = document.getElementById('audioIcon');
+
+      if (!isPlayingAudio) {
+        if (!audioCtx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          audioCtx = new AudioContext();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+
+        // Create Master Gain
+        masterGain = audioCtx.createGain();
+        masterGain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        masterGain.connect(audioCtx.destination);
+
+        // Frequencies for royal meditative Indian Sa-Pa drone (C# Tanpura tuned ~138.5Hz, 207.65Hz, 277Hz)
+        const notes = [138.59, 207.65, 277.18, 554.37];
+        oscillators = notes.map((freq, i) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          
+          osc.type = i % 2 === 0 ? 'sine' : 'triangle';
+          osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+          
+          // Slight low-frequency oscillation for realistic wind/meditative resonance
+          gain.gain.setValueAtTime(0.2 / (i + 1), audioCtx.currentTime);
+          osc.connect(gain);
+          gain.connect(masterGain);
+          osc.start();
+          return osc;
+        });
+
+        isPlayingAudio = true;
+        btnText.innerText = "BGM: Royal Drone";
+        icon.className = "fa-solid fa-volume-high text-saffron-500";
+      } else {
+        if (masterGain) {
+          masterGain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.5);
+          setTimeout(() => {
+            oscillators.forEach(o => {
+              try { o.stop(); o.disconnect(); } catch(e){}
+            });
+            oscillators = [];
+          }, 500);
+        }
+        isPlayingAudio = false;
+        btnText.innerText = "BGM: Off";
+        icon.className = "fa-solid fa-volume-xmark";
+      }
+    }
+
+    /* ==========================================================
+       6. LANGUAGE TOGGLE (ENGLISH <-> MARATHI)
+       ========================================================== */
+    function toggleLanguage() {
+      currentLang = currentLang === 'en' ? 'mr' : 'en';
+      document.getElementById('langDisplay').innerText = currentLang === 'en' ? 'मराठी' : 'ENGLISH';
+      renderFortsGrid(fortsData);
+      
+      // Update Hero Quote
+      const topQuote = document.querySelector('[data-i18n="topQuote"]');
+      if (topQuote) {
+        topQuote.innerText = currentLang === 'en' 
+          ? "प्रतिपच्चंद्रलेखेव वर्धिष्णुर्विश्ववंदिता शाहसूनोः शिवस्यैषा मुद्रा भद्राय राजते |"
+          : "प्रतिपच्चंद्रलेखेव वर्धिष्णुर्विश्ववंदिता शाहसूनोः शिवस्यैषा मुद्रा भद्राय राजते |";
+      }
+    }
+
+    /* ==========================================================
+       7. MOBILE NAV & FORM DISPATCH
+       ========================================================== */
+    function toggleMobileNav() {
+      const menu = document.getElementById('mobileMenu');
+      menu.classList.toggle('hidden');
+    }
+
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const toast = document.getElementById('formSuccessToast');
+      toast.classList.remove('hidden');
+      e.target.reset();
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 5000);
+    }
+
+    // On Load
+    window.addEventListener('DOMContentLoaded', () => {
+      initMaharashtraMap();
+      renderFortsGrid(fortsData);
+    });
+  </script>
+</body>
+</html>
